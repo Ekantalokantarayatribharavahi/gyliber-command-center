@@ -18,7 +18,7 @@ import (
 )
 
 const appVersion = "0.2.0"
-const schema = \`
+const schema = `
 CREATE TABLE IF NOT EXISTS runs (
  id TEXT PRIMARY KEY, division TEXT NOT NULL, operation TEXT NOT NULL,
  status TEXT NOT NULL, seed INTEGER, dataset_hash TEXT,
@@ -37,20 +37,20 @@ CREATE TABLE IF NOT EXISTS artifacts (
 CREATE TABLE IF NOT EXISTS system_changes (
  id TEXT PRIMARY KEY, component TEXT NOT NULL, previous_version TEXT,
  new_version TEXT NOT NULL, reason TEXT NOT NULL, created_at TEXT NOT NULL
-);\`
+);`
 
 type Server struct{ db *sql.DB; frontend string }
 type RunRequest struct {
- Division string \`json:"division"\`
- Operation string \`json:"operation"\`
- Seed *int64 \`json:"seed,omitempty"\`
- DatasetHash string \`json:"dataset_hash,omitempty"\`
+ Division string `json:"division"`
+ Operation string `json:"operation"`
+ Seed *int64 `json:"seed,omitempty"`
+ DatasetHash string `json:"dataset_hash,omitempty"`
 }
 type AdapterStatus struct {
- Name string \`json:"name"\`
- State string \`json:"state"\`
- OperationCount int \`json:"operation_count"\`
- Version string \`json:"version"\`
+ Name string `json:"name"`
+ State string `json:"state"`
+ OperationCount int `json:"operation_count"`
+ Version string `json:"version"`
 }
 type Adapter struct{ Name string }
 func (a Adapter) Status() AdapterStatus { return AdapterStatus{a.Name,"READY",0,"0.1.0"} }
@@ -62,7 +62,7 @@ var adapters = []Adapter{
 
 func main() {
  dbPath:=getenv("DB_PATH","gyliber_command_center.db")
- frontend:=getenv("FRONTEND_DIST","../frontend/dist")
+ frontend:=getenv("FRONTEND_DIST","frontend/dist")
  db,err:=sql.Open("sqlite",dbPath);if err!=nil{log.Fatal(err)};defer db.Close()
  if _,err=db.Exec(schema);err!=nil{log.Fatal(err)}
  if _,err=db.Exec("PRAGMA foreign_keys = ON");err!=nil{log.Fatal(err)}
@@ -186,6 +186,7 @@ func (s *Server) lineage(w http.ResponseWriter,r *http.Request){
 func (s *Server) frontendHandler(w http.ResponseWriter,r *http.Request){
  if r.Method!=http.MethodGet&&r.Method!=http.MethodHead{http.Error(w,"method not allowed",405);return}
  clean:=filepath.Clean(strings.TrimPrefix(r.URL.Path,"/"));if clean=="."||clean==""{clean="index.html"}
+ if filepath.IsAbs(clean)||clean==".."||strings.HasPrefix(clean,".."+string(os.PathSeparator)){http.Error(w,"not found",404);return}
  path:=filepath.Join(s.frontend,clean)
  if info,err:=os.Stat(path);err==nil&&!info.IsDir(){http.ServeFile(w,r,path);return}
  index:=filepath.Join(s.frontend,"index.html");if _,err:=os.Stat(index);err==nil{http.ServeFile(w,r,index);return}
