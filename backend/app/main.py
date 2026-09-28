@@ -6,6 +6,9 @@ from datetime import datetime, timezone
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from pydantic import BaseModel
 
 from .adapters import ADAPTERS
@@ -22,6 +25,12 @@ class RunRequest(BaseModel):
     operation: str
     seed: int | None = None
     dataset_hash: str | None = None
+
+@app.get("/", include_in_schema=False)
+def index():
+    if (FRONTEND_DIST / "index.html").exists():
+        return FileResponse(FRONTEND_DIST / "index.html")
+    return {"service":"GyLiber Command Center","status":"backend-ready"}
 
 @app.on_event("startup")
 def startup() -> None:
