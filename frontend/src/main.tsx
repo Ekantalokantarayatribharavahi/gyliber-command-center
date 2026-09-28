@@ -2,7 +2,7 @@ import React,{useEffect,useState} from "react";
 import {createRoot} from "react-dom/client";
 import "./styles.css";
 
-const API="http://localhost:8000";
+const API="";
 type Status=Record<string,any>;
 type Run=Record<string,any>;
 
