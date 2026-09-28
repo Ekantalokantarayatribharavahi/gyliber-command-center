@@ -1,38 +1,34 @@
 # GyLiber Command Center
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Ekantalokantarayatribharavahi/gyliber-command-center)
-
 A local control-plane for the GyLiber analytical system.
-
-The MVP provides a dark command-center web UI, a REST API, a SQLite run/event/artifact registry, adapter interfaces for the four analytical instruments, lineage metadata, and reproducible run records.
 
 ## Stack
 
 - React + TypeScript + Vite frontend
-- FastAPI backend
+- Go orchestration/API backend
 - SQLite persistence
 - Adapter boundary for Data Forge, Forensics, Crowding, and Combination Lab
 
-## Run
+The analytical repositories remain independently executable. The Command Center is their control and observability layer.
 
-Backend:
+## Run locally
 
-```bash
-cd backend
-python -m pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-Frontend:
+Build the frontend:
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run build
+cd ..
 ```
 
-Open the Vite URL shown by the frontend.
+Run the Go control plane:
 
-## Design
+```bash
+go mod download
+FRONTEND_DIST=frontend/dist go run ./backend
+```
 
-The repositories remain independent scientific instruments. The Command Center is the orchestration and observability layer above them.
+## Deployment
+
+The repository contains a Render Blueprint using the Go native runtime. Render supports `runtime: go`; sync the Blueprint after committing the runtime change.
