@@ -1,0 +1,5 @@
+backend/gyliber_command_center.db
+frontend/node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
