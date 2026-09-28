@@ -1,9 +1,14 @@
 services:
   - type: web
     name: gyliber-command-center
-    runtime: python
+    runtime: go
     plan: free
-    buildCommand: cd frontend && npm install && npm run build && cd ../backend && pip install -r requirements.txt
-    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd frontend && npm install && npm run build && cd .. && go mod tidy && go build -o gyliber-command-center ./backend
+    startCommand: ./gyliber-command-center
     healthCheckPath: /api/system/status
     autoDeployTrigger: commit
+    envVars:
+      - key: FRONTEND_DIST
+        value: frontend/dist
+      - key: DB_PATH
+        value: gyliber_command_center.db
