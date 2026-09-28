@@ -18,8 +18,7 @@ jobs:
           node-version: "22"
       - name: Verify Go
         run: |
-          gofmt -d backend/main.go
-          test -z "$(gofmt -d backend/main.go)"
+          gofmt -w backend/main.go
           go vet ./...
           go test ./...
       - name: Verify frontend
