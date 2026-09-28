@@ -3,9 +3,9 @@ services:
     name: gyliber-command-center
     runtime: go
     plan: free
-    buildCommand: cd frontend && npm install && npm run build && cd .. && go mod tidy && go build -o gyliber-command-center ./backend
+    buildCommand: cd frontend && npm install && npm run build && cd .. && go mod tidy && go build -tags netgo -ldflags '-s -w' -o gyliber-command-center ./backend
     startCommand: ./gyliber-command-center
-    healthCheckPath: /api/system/status
+    healthCheckPath: /api/system/health
     autoDeployTrigger: commit
     envVars:
       - key: FRONTEND_DIST
