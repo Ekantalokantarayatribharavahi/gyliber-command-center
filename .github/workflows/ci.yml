@@ -19,6 +19,7 @@ jobs:
       - name: Verify Go
         run: |
           gofmt -w backend/main.go
+          go mod download
           go vet ./...
           go test ./...
       - name: Verify frontend
