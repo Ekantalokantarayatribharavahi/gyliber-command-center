@@ -1,5 +1,7 @@
 # GyLiber Command Center
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Ekantalokantarayatribharavahi/gyliber-command-center)
+
 A local control-plane for the GyLiber analytical system.
 
 The MVP provides a dark command-center web UI, a REST API, a SQLite run/event/artifact registry, adapter interfaces for the four analytical instruments, lineage metadata, and reproducible run records.
